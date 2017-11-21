@@ -84,7 +84,7 @@ class Collect:
 
             try:
                 db.insert('air_traffic',
-                    id = _id,
+                    flight_id = _id,
                     lat = lat,
                     lng = lng,
                     alt = altitude,
