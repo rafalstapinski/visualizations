@@ -1,7 +1,10 @@
 {
-    "DB": {
-        "host": "",
-        "port":
+"DB": {
+        "dbn": "postgres",
+        "db": "",
+        "user": "",
+        "pw": "",
+        "host": ""
     },
     "air-traffic": {
         "base_url": "https://api.laminardata.aero/v1/tiles/3/%d/%d/flights",
