@@ -1,0 +1,10 @@
+{
+    "DB": {
+        "host": "",
+        "port":
+    },
+    "air-traffic": {
+        "base_url": "https://api.laminardata.aero/v1/tiles/3/%d/%d/flights",
+        "user_key": ""
+    }
+}
