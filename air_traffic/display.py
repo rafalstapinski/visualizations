@@ -12,14 +12,15 @@ class Display:
     def __init__(self, set_id):
 
         self.db = Help.DB.connect()
-        self.max = db.select('air_traffic',
+        
+        self.max = self.db.select('air_traffic',
             vars = {'set_id': set_id},
             what = 'processed, COUNT(processed) as c',
             where = 'set_id = $set_id',
             group = 'processed',
             order = 'c DESC',
             limit = 1
-        )
+        ).first().c
 
         print self.max
 
