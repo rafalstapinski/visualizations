@@ -12,18 +12,24 @@ class Display:
     def __init__(self, set_id):
 
         self.db = Help.DB.connect()
-        
+
+        self.frames = self.db.select('air_traffic',
+            vars = {'set_id': set_id},
+            what = 'COUNT(DISTINCT processed) AS c',
+            where = 'set_id = $set_id',
+        ).first().c
+
         self.max = self.db.select('air_traffic',
             vars = {'set_id': set_id},
-            what = 'processed, COUNT(processed) as c',
+            what = 'processed, COUNT(processed) AS c',
             where = 'set_id = $set_id',
             group = 'processed',
             order = 'c DESC',
             limit = 1
         ).first().c
 
-        print self.max
-
+        self.points = []
+        
 
     def map_init():
 
