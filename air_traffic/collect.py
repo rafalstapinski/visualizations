@@ -68,11 +68,25 @@ class Collect:
 
             if 'departure' in feature['properties']:
 
-                departure = arrow.get(
-                    feature['properties']['departure']['runwayTime']['actual']
-                ).timestamp
+                try:
+                    departure = arrow.get(
+                        feature['properties']['departure']['runwayTime']['actual']
+                    ).timestamp
 
-                in_air = capture - departure
+                    in_air = capture - departure
+
+                except KeyError:
+                    in_air = None
+
+                try:
+                    departure = arrow.get(
+                        feature['properties']['departure']['runwayTime']['extimate']
+                    ).timestamp
+
+                    in_air = capture - departure
+
+                except KeyError:
+                    in_air = None
 
             else:
                 in_air = None
