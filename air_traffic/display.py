@@ -37,12 +37,20 @@ class Display:
             llcrnrlat=0,
             llcrnrlon=40,
             urcrnrlat=50,
-            urcrnrlon=60,
+            urcrnrlon=90,
             lat_ts=20,
             resolution='c'
         )
 
         self.offset = 0
+
+        self.points = []
+
+        for i in range(self.max):
+
+            x, y = self.m(0, 0)
+            pt = self.m.plot(x, y, 'ro', markersize = 1)[0]
+            self.points.append(pt)
 
         self.m.fillcontinents(color = 'gray')
         self.m.drawmapboundary()
@@ -54,11 +62,12 @@ class Display:
 
         anim = animation.FuncAnimation(
             fig = plt.gcf(),
-            init_func = self.clear_map,
+            # init_func = self.clear_map,
             func = self.animate,
             frames = 10,
             interval = 10,
-            save_count = 100,
+            blit = True
+            # save_count = 100,
         )
 
         anim.save('plot_animation.html')
@@ -67,105 +76,52 @@ class Display:
 
     def clear_map(self):
 
-        x, y = self.m(0, 0)
-        point = self.m.plot(x, y, 'ro', markersize=5)[0]
-        point.set_data([], [])
-        return point,
+        for pt in self.points:
+            pt.set_data([], [])
 
     def animate(self, i):
 
         if self.counter > 30:
             sys.exit()
 
+        to_add = self.max - len(self.queue)
+
         self.queue += self.db.select('air_traffic',
             vars = {'set_id': self.set_id},
             where = 'set_id = $set_id',
-            limit = self.max,
-            offset = self.offset
+            limit = to_add,
+            offset = self.offset,
+            order = 'id ASC'
         ).list()
 
-        self.offset += self.max
+        self.offset += to_add
 
         current_process = self.queue[0].processed
 
-        points = []
+        # while (current_procees - 2) <= self.queue[0].processed <= (current_procees + 2):
 
-        # for record in self.queue:
-        #
-        #     if record.processed != current_process:
-        #         break
-        #
-        #     x, y = self.m(record.lng, record.lat)
-        #     point = self.m.plot(x, y, 'ro', markersize = 2)[0]
-        #     points.append(point)
+        in_batch = 0
 
         while self.queue[0].processed == current_process:
 
             record = self.queue.pop(0)
-
             x, y = self.m(record.lng, record.lat)
-
-            # print x, y
-
-            point = self.m.plot(x, y, 'ro', markersize = 2)[0]
+            point = self.m.plot(x, y, 'ro', markersize = 1)[0]
             points.append(point)
+            in_batch += 1
 
-        self.counter += 1
+        # print len(points)
+
+        for pt in self.points[in_batch:]
+
+        # x, y = self.m(0, 0)
+        # point = self.m.plot(x, y, 'ro', markersize = 2)[0]
+        # point.set_data([], [])
+        # return point,
 
         return points
 
-
     def show(self):
 
-        plt.show()
-
-# from mpl_toolkits.basemap import Basemap
-# import matplotlib.pyplot as plt
-# import numpy as np
-# import matplotlib.animation as animation
-# my_map = Basemap(projection='robin', resolution = 'l', area_thresh = 1000.0,
-#           lat_0=0, lon_0=-130)
-# my_map.drawcoastlines()
-# my_map.drawcountries()
-# my_map.fillcontinents(color = 'gray')
-# my_map.drawmapboundary()
-# my_map.drawmeridians(np.arange(0, 360, 30))
-# my_map.drawparallels(np.arange(-90, 90, 30))
-#
-#
-# points = []
-#
-#
-# for i in range(10):
-#     lng, lat = np.random.random_integers(-130, 130, 2)
-#     x, y = my_map(lng, lat)
-#     point = my_map.plot(x, y, 'ro', markersize=5)[0]
-#     points.append(point)
-#
-# def init():
-#
-#     # points = []
-#
-#     for i in range(10):
-#         lng, lat = np.random.random_integers(-130, 130, 2)
-#         x, y = my_map(lng, lat)
-#         points[i].set_data(x, y)
-#
-#     point.set_data([], [])
-#     return points
-#
-# # animation function.  This is called sequentially
-# def animate(f):
-#
-#     for i in range(10):
-#         lng, lat = np.random.random_integers(-130, 130, 2)
-#         x, y = my_map(lng, lat)
-#         points[i].set_data(x, y)
-#
-#     return points
-#
-# # call the animator.  blit=True means only re-draw the parts that have changed.
-# anim = animation.FuncAnimation(plt.gcf(), func = animate, init_func = init,
-#                                frames=20, interval=500, blit=True)
-#
-# plt.show()
+        # plt.show()
+        pass

@@ -3,3 +3,4 @@
 *.p
 plot_animation_frames/
 plot_animation.html
+.DS_STORE
