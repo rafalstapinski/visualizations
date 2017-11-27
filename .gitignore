@@ -1,3 +1,5 @@
 *.pyc
 *.json
 *.p
+plot_animation_frames/
+plot_animation.html
